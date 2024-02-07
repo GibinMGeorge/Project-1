@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Finder</title>
+  <title>Recipe Explorer and Meal Planner</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,16 +12,20 @@
   </header>
 
   <main>
-    <div class="col-12 col-md-4">
+    <section id="recipe-search">
       <form id="search-form">
-        <label for="recipe-input">Enter recipe:</label>
-        <input type="text" id="recipe-input" placeholder="recipe">
-        <button type="submit">Find recipe</button>
+        <label for="city-input">Enter Ingredient:</label>
+        <input type="text" id="ingredient-input" placeholder="Ingredient">
+        <button type="button" onclick="searchRecipes()">Search</button>
       </form>
-    </div>
-    
-    <section id="recipe">
-      <!-- Displays recipe and nutrition information -->
+      <div id="recipe-results"></div>
+    </section>
+
+    <section id="nutritional-info">
+      <h2>Nutritional Information</h2>
+      <!-- This shows about Nutrition al Infos -->
+      <div id="nutrition-results"></div>
+    </section>
 
   </main>
 
