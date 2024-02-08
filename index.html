@@ -4,28 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recipe Finder</title>
+  <!-- BULMA CSS  -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <header>
-    <h1>Recipe Finder</h1>
+<body class="has-background-">
+  <!-- HEADER -->
+  <header class="columns has-background-info has-text-light has-text-centered is-vcentered py-2">
+    <section class="column is-6">
+      <h1 class="is-size-1 has-text-weight-bold">Recipe Finder</h1>
+    </section>
+    <section class="column is-6"><img id="logo" src="./images/logo1.png" alt="site logo"></section>
   </header>
 
-  <main>
-    <div class="col-12 col-md-4">
-      <form id="search-form">
-        <label for="recipe-input">Enter recipe:</label>
-        <input type="text" id="recipe-input" placeholder="recipe">
-        <button type="submit">Find recipe</button>
-      </form>
-    </div>
-    
-    <section id="recipe">
-      <!-- Displays recipe and nutrition information -->
-
+  <!-- MAIN -->
+  <main class="container is-fullhd py-3">
+    <section class="columns is-vcentered">
+      <section class="column is-6 section ">
+        <h4 class="is-size-2 has-text-weight-light has-text-centered has-text-dark mb-4">Recipe Finder</h4>
+        <p class="is-size-5 is-italic has-text-weight-light has-text-dark">Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+          Id qui iure ullam quaerat amet quae, fugit praesentium saepe veritatis
+          sapiente doloribus quibusdam consequatur placeat explicabo facere, provident optio nostrum velit?</p>
+      </section>
+      <section class="column is-6 section has-text-centered">
+        <img id="main-img" src=".images/img-1.jpg">
+      </section>
+    </section>
   </main>
+  
+  <section class="section">
+    <div class="container">
+        <h4 class="is-size-2 has-text-weight-light has-text-centered has-text-dark mb-4">Search Here</h4>
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input id="search-input" class="input" type="text" placeholder="onion, carrot, chicken">
+        </div>
+        <div class="control">
+          <button id="search-btn" class="button is-info">
+            Search
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <section class="section">
+    <div class="columns mx-4 is-centered has-text-centered "> <!-- add is-multiline if there are more than 3 cards -->
+        <div class="card column is-4 mx-3 my-3">
+            <h6 class="title has-text-centered pt-3">Recipe Name</h6>
+            <div class="card-image mx-3">
+                <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+            </div>
+            <p class="content is-size-3 has-text-centered">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, incidunt!</p>
+            <button class="button is-info see-more-btn" data-target="modal-2">See more</button>
+        </div>
+
+        <div class="card column is-4 mx-3 my-3 has-text-centered">
+            <h6 class="title has-text-centered pt-3">Recipe Name</h6>
+            <div class="card-image mx-3">
+                <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+            </div>
+            <p class="content is-size-3 has-text-centered">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, incidunt!</p>
+            <button  class="button is-info see-more-btn" data-target="modal-2">See more</button>
+        </div>
+
+        <div class="card column is-4 mx-3 my-3 has-text-centered">
+            <h6 class="title has-text-centered pt-3">Recipe Name</h6>
+            <div class="card-image mx-3">
+                <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+            </div>
+            <p class="content is-size-3 has-text-centered">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, incidunt!</p>
+            <button class="button is-info see-more-btn">See more</button>
+        </div>
+
+        
+    </div>
+  </section>
+
+  <!-- MODAL -->
+
+  <div class="modal"> <!-- add is-active when button "see more" clicked -->
+    <div class="modal-background"></div>
+    <div class="modal-content has-background-white py-5 px-5">
+        <h1>something</h1>
+    </div>
+  </div>
+
+
   <script src="script.js"></script>
 </body>
 </html>
