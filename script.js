@@ -70,4 +70,3 @@ function getRecipeInstructions(recipeId) {
         console.error('Error fetching recipe instructions:', error);
     });
 }
-
