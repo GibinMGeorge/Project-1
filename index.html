@@ -9,8 +9,6 @@
   <!-- CSS -->
   <link rel="stylesheet" href="./Assets/css/style.css">
 
-  <!-- JavaScript -->
-  <script src="./Assets/js/george-script.js"></script>
 </head>
 <body class="has-background-">
   <!-- HEADER -->
@@ -45,7 +43,7 @@
           <input id="search-input" class="input" type="text" placeholder="onion, carrot, chicken">
         </div>
         <div class="control">
-          <button id="search-btn" class="button is-info" onclick="searchRecipes()">
+          <button id="search-btn" class="button is-info">
             Find Recipe
           </button>
         </div>
@@ -54,7 +52,7 @@
   </section>
 
   <section class="section">
-    <div class="columns mx-4 is-centered has-text-centered "> <!-- add is-multiline if there are more than 3 cards -->
+    <div id="recipe-results" class="columns mx-4 is-centered has-text-centered "> <!-- add is-multiline if there are more than 3 cards -->
         <div class="card column is-4 mx-3 my-3" style="display: none;">  
             <h6 class="title has-text-centered pt-3">Recipe Name</h6>
             <div class="card-image mx-3">
@@ -91,5 +89,7 @@
     </div>
   </div>
 
+<!-- JavaScript -->
+<script src="./Assets/js/george-script.js"></script>
 </body>
 </html>

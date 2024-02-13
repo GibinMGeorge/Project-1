@@ -1,7 +1,14 @@
+const modalBg = document.querySelector('.modal-background');
+const modal = document.querySelector('.modal');
 // Function to search for recipes based on ingredients
 function searchRecipes() {
+    console.log("Button clicked! Implement your search logic here.");
+
+    
+    const recipeResults = document.getElementById('recipe-results');
     const ingredients = document.getElementById('search-input').value.trim();
-    const recipeResults = document.querySelector('.columns.mx-4.is-centered');
+
+    
 
     // Clear previous results
     recipeResults.innerHTML = '';
@@ -13,7 +20,7 @@ function searchRecipes() {
     }
 
     // Make API call to retrieve recipes based on ingredients using Recipe API
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=de1acafedb0a4a1198f8090c07677726`)
+    fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=d93937256fa8479e9816d2f8fdf61efc`)
     .then(response => response.json())
     .then(data => {
         if (!data || data.length === 0) {
@@ -55,6 +62,7 @@ function searchRecipes() {
             // Event listener to get recipe instructions when "See more" button is clicked
             seeMoreBtn.addEventListener('click', () => {
                 getRecipeDetails(recipe.id);
+                modal.classList.add('is-active');
             });
         });
     })
@@ -68,19 +76,25 @@ function getRecipeDetails(recipeId) {
     const instructionResults = document.querySelector('.modal-content');
 
     // Make API call to retrieve recipe instructions using Recipe API
-    fetch(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=de1acafedb0a4a1198f8090c07677726`)
+    fetch(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=d93937256fa8479e9816d2f8fdf61efc`)
     .then(response => response.json())
     .then(data => {
         // Display recipe instructions
-        const instructionsHtml = `
+        let instructionsHtml = ``
+        if(data[0]){
+            instructionsHtml = `
             <h2>Recipe Instructions</h2>
             <ol>
                 ${data[0].steps.map(step => `<li>${step.step}</li>`).join('')}
-            </ol>
-        `;
+            </ol>`
+        }
+        else{
+            instructionsHtml = `<p> Sorry, No Instructions found !! </p>`
+        }
+            
 
         // Make API call to retrieve nutritional information using Recipe API
-        return fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=de1acafedb0a4a1198f8090c07677726`)
+        return fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=d93937256fa8479e9816d2f8fdf61efc`)
             .then(response => response.json())
             .then(nutritionData => {
                 // Display nutritional information
@@ -99,3 +113,10 @@ function getRecipeDetails(recipeId) {
         console.error('Error fetching recipe details:', error);
     });
 }
+
+const searchBtn = document.getElementById('search-btn');
+searchBtn.addEventListener("click", searchRecipes);
+
+modalBg.addEventListener('click', () => {
+    modal.classList.remove('is-active');
+  });
