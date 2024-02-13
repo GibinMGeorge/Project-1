@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Explorer and Meal Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Recipe Finder</h1>
+  </header>
+
+  <main>
+    <section id="recipe-search">
+      <form id="search-form">
+        <label for="city-input">Enter Ingredient:</label>
+        <input type="text" id="ingredient-input" placeholder="Ingredient">
+        <button type="button" onclick="searchRecipes()">Search</button>
+      </form>
+      <div id="recipe-results"></div>
+    </section>
+
+    <section id="instruction-info">
+      <!-- This shows about Instructions -->
+      <div id="instruction-results"></div>
+    </section>
+
+    <section id="nutrition-info">
+        <!-- This shows about Instructions -->
+        <div id="nutrition-results"></div>
+      </section>
+
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

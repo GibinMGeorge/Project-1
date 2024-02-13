@@ -1,8 +1,10 @@
 // Function to search for recipes based on ingredients
 function searchRecipes() {
     console.log("Button clicked! Implement your search logic here.");
-    const ingredients = document.getElementById('ingredient-input').value.trim();
+    
     const recipeResults = document.getElementById('recipe-results');
+    const ingredients = document.getElementById('search-input').value.trim();
+    
 
     // Clear previous results
     recipeResults.innerHTML = '';
@@ -14,7 +16,7 @@ function searchRecipes() {
     }
 
     // Make API call to retrieve recipes based on ingredients using Recipe API
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=44fabab8576843c3ab1aae250e0ebc39`)
+    fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=de1acafedb0a4a1198f8090c07677726`)
     .then(response => response.json())
     .then(data => {
         if (!data || data.length === 0) {
@@ -25,24 +27,37 @@ function searchRecipes() {
         // Display recipe results
         data.forEach(recipe => {
             const recipeCard = document.createElement('div');
-            recipeCard.classList.add('recipe-card');
+            recipeCard.classList.add('card', 'column', 'is-4', 'mx-3', 'my-3', 'has-text-centered');
 
-            const recipeTitle = document.createElement('h3');
+            const recipeTitle = document.createElement('h6');
+            recipeTitle.classList.add('title', 'has-text-centered', 'pt-3');
             recipeTitle.textContent = recipe.title;
 
             const recipeImage = document.createElement('img');
+            recipeImage.classList.add('card-image', 'mx-3');
             recipeImage.src = recipe.image;
             recipeImage.alt = recipe.title;
 
+            const recipeContent = document.createElement('p');
+            recipeContent.classList.add('content', 'is-size-3', 'has-text-centered');
+            // recipeContent.textContent = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, incidunt!';
+
+            const seeMoreBtn = document.createElement('button');
+            seeMoreBtn.classList.add('button', 'is-info', 'see-more-btn');
+            seeMoreBtn.setAttribute('data-target', 'modal');
+            seeMoreBtn.setAttribute('data-recipe-id', recipe.id);
+            seeMoreBtn.textContent = 'See more';
+
             recipeCard.appendChild(recipeTitle);
             recipeCard.appendChild(recipeImage);
+            recipeCard.appendChild(recipeContent);
+            recipeCard.appendChild(seeMoreBtn);
 
             recipeResults.appendChild(recipeCard);
 
-            // Event listener to get recipe instructions and nutritional information when recipe is clicked
-            recipeCard.addEventListener('click', () => {
-                getRecipeInstructions(recipe.id);
-                getNutritionalInfo(recipe.title);
+            // Event listener to get recipe instructions when "See more" button is clicked
+            seeMoreBtn.addEventListener('click', () => {
+                getRecipeDetails(recipe.id);
             });
         });
     })
@@ -51,24 +66,40 @@ function searchRecipes() {
     });
 }
 
-// Function to get recipe instructions
-function getRecipeInstructions(recipeId) {
-    const instructionResults = document.getElementById('instruction-results');
+// Function to get recipe instructions and nutritional information
+function getRecipeDetails(recipeId) {
+    const instructionResults = document.querySelector('.modal-content');
 
     // Make API call to retrieve recipe instructions using Recipe API
-    fetch(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=44fabab8576843c3ab1aae250e0ebc39`)
+    fetch(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=de1acafedb0a4a1198f8090c07677726`)
     .then(response => response.json())
     .then(data => {
         // Display recipe instructions
-        instructionResults.innerHTML = `
+        const instructionsHtml = `
             <h2>Recipe Instructions</h2>
             <ol>
                 ${data[0].steps.map(step => `<li>${step.step}</li>`).join('')}
             </ol>
         `;
+
+        // Make API call to retrieve nutritional information using Recipe API
+        return fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=de1acafedb0a4a1198f8090c07677726`)
+            .then(response => response.json())
+            .then(nutritionData => {
+                // Display nutritional information
+                const nutritionHtml = `
+                    <h2>Nutritional Information</h2>
+                    <p>Calories: ${nutritionData.calories}</p>
+                    <p>Protein: ${nutritionData.protein}</p>
+                    <p>Fat: ${nutritionData.fat}</p>
+                    <p>Carbohydrates: ${nutritionData.carbs}</p>
+                `;
+                // Combine recipe instructions and nutritional information
+                instructionResults.innerHTML = instructionsHtml + nutritionHtml;
+            });
     })
     .catch(error => {
-        console.error('Error fetching recipe instructions:', error);
+        console.error('Error fetching recipe details:', error);
     });
 }
 
