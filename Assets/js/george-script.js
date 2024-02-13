@@ -1,5 +1,6 @@
 // Function to search for recipes based on ingredients
 function searchRecipes() {
+    console.log("Button clicked! Implement your search logic here.");
     const ingredients = document.getElementById('ingredient-input').value.trim();
     const recipeResults = document.getElementById('recipe-results');
 
@@ -71,3 +72,5 @@ function getRecipeInstructions(recipeId) {
     });
 }
 
+const searchBtn = document.getElementById('search-btn');
+searchBtn.addEventListener("click", searchRecipes);
