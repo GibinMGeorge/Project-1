@@ -72,12 +72,18 @@ function getRecipeDetails(recipeId) {
     .then(response => response.json())
     .then(data => {
         // Display recipe instructions
-        const instructionsHtml = `
+        let instructionsHtml = ``
+        if(data[0]){
+            instructionsHtml = `
             <h2>Recipe Instructions</h2>
             <ol>
                 ${data[0].steps.map(step => `<li>${step.step}</li>`).join('')}
-            </ol>
-        `;
+            </ol>`
+        }
+        else{
+            instructionsHtml = `<p> Sorry, No Instructions found !! </p>`
+        }
+            
 
         // Make API call to retrieve nutritional information using Recipe API
         return fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=de1acafedb0a4a1198f8090c07677726`)
