@@ -7,9 +7,9 @@ function searchRecipes() {
     
     const recipeResults = document.getElementById('recipe-results');
     const ingredients = document.getElementById('search-input').value.trim();
-
     
-
+    saveLastSearch(ingredients);
+    
     // Clear previous results
     recipeResults.innerHTML = '';
 
@@ -120,3 +120,39 @@ searchBtn.addEventListener("click", searchRecipes);
 modalBg.addEventListener('click', () => {
     modal.classList.remove('is-active');
   });
+
+
+// Populate the search input with the last 5 search terms on page load
+var saveLastSearch = (ingredients) => {
+    // Retrieve existing search terms from local storage
+    let lastSearches = JSON.parse(localStorage.getItem('lastSearches')) || [];
+
+    // Add the current search term to the array
+    lastSearches.unshift(ingredients);
+
+    // Keep only the last 5 search terms
+    lastSearches = lastSearches.slice(0, 5);
+
+    // Save the updated array in local storage
+    localStorage.setItem('lastSearches', JSON.stringify(lastSearches));
+
+    // Display the last 5 search terms in the list
+    const lastSearchList = document.querySelector('ul');
+    lastSearchList.innerHTML = ''; // Clear existing list
+
+    lastSearches.forEach((searchTerm, index) => {
+        const newElement = document.createElement('li');
+        newElement.classList.add('last-search-list');
+        newElement.textContent = searchTerm;
+
+        // Add click event listener to set search input value
+        newElement.addEventListener('click', () => {
+            document.getElementById('search-input').value = searchTerm;
+            searchRecipes();
+        });
+
+        lastSearchList.appendChild(newElement);
+    });
+};
+
+ 
