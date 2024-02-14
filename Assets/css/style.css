@@ -7,3 +7,20 @@
     max-height: 400px;
     border-radius: 50%;
 }
+
+ul > li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px;
+    cursor: pointer;
+}
+
+li:hover{
+    color: black;
+    background-color: #3488CE;
+}
