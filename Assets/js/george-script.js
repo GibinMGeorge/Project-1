@@ -1,158 +1,178 @@
-const modalBg = document.querySelector('.modal-background');
-const modal = document.querySelector('.modal');
-// Function to search for recipes based on ingredients
-function searchRecipes() {
-    console.log("Button clicked! Implement your search logic here.");
+// api key
+const APIKey = '13c389678aa941079e53352da0c7ae3a';
 
-    
-    const recipeResults = document.getElementById('recipe-results');
-    const ingredients = document.getElementById('search-input').value.trim();
-    
-    saveLastSearch(ingredients);
-    
-    // Clear previous results
-    recipeResults.innerHTML = '';
+// Load saved cities from local storage
+var savedRecipe = JSON.parse(localStorage.getItem('savedRecipe')) || [];
+displayLastSearch();
 
-    // Validate ingredient input
-    if (!ingredients) {
-        alert('Please enter ingredients.');
-        return;
+
+// link html using jquery
+//search-input
+const searchInput = $('#search-input');
+//search-btn
+const searchBtn = $('#search-btn');
+searchBtn.click(() => {
+    validateInput();
+    const lastRecipe = searchInput.val()
+    saveRecipe(lastRecipe);
+    displayCards();
+})
+//recipe-results
+const recipeResults = $('#recipe-results');
+
+//modal-search
+const modalSearch = $('#modal-search');
+
+//modal-search-bg
+const modalSearchBg = $('#modal-search-bg');
+
+// function to fetch the api data on click
+function displayCards() {
+    fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${searchInput.val()}&number=6&apiKey=${APIKey}`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            console.log(data)
+            recipeResults.html('');
+            data.forEach(recipe => {
+                const recipeCard = $('<div>')
+                    .addClass('card column is-4 mx-3 my-3 has-text-centered container')
+
+                const recipeTitle = $('<h6>')
+                    .addClass('title has-text-centered pt-3')
+                    .html(`<p>${recipe.title}</p>`);
+                recipeCard.append(recipeTitle);
+
+                const recipeFigure = $('<figure>')
+                    .addClass('image is-centered')
+                const recipeImage = $('<img>')
+                    .attr('src', recipe.image)
+                recipeFigure.append(recipeImage)
+                recipeCard.append(recipeFigure);
+
+                const seeMoreBtn = $('<button>')
+                    .addClass('button is-info see-more-btn mt-3 mb-3')
+                    .attr('recipe-id', recipe.id)
+                seeMoreBtn.text('See more')
+                    .click(() => {
+                        recipeDetails(recipe.id);
+                    })
+                recipeCard.append(seeMoreBtn);
+
+                recipeResults.append(recipeCard);
+            });
+        })
+}
+//validate the text on the search input
+function validateInput() {
+    if (!searchInput.val()) {
+        modalSearch.addClass('is-active')   //create a modal if search-input false 
+    }
+    modalSearchBg.click(() => {
+        modalSearch.removeClass('is-active')  //close modal
+    })
+}
+
+function saveRecipe(lastRecipe) {
+
+    savedRecipe = savedRecipe.filter(savedRecipe => savedRecipe !== lastRecipe);
+
+    savedRecipe.unshift(lastRecipe);
+
+    if (savedRecipe.length > 5) {
+        savedRecipe.pop();
     }
 
-    // Make API call to retrieve recipes based on ingredients using Recipe API
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=d93937256fa8479e9816d2f8fdf61efc`)
-    .then(response => response.json())
-    .then(data => {
-        if (!data || data.length === 0) {
-            recipeResults.innerHTML = '<p>No recipes found.</p>';
-            return;
-        }
+    localStorage.setItem('savedRecipe', JSON.stringify(savedRecipe));
 
-        // Display recipe results
-        data.forEach(recipe => {
-            const recipeCard = document.createElement('div');
-            recipeCard.classList.add('card', 'column', 'is-4', 'mx-3', 'my-3', 'has-text-centered');
-
-            const recipeTitle = document.createElement('h6');
-            recipeTitle.classList.add('title', 'has-text-centered', 'pt-3');
-            recipeTitle.textContent = recipe.title;
-
-            const recipeImage = document.createElement('img');
-            recipeImage.classList.add('card-image', 'mx-3');
-            recipeImage.src = recipe.image;
-            recipeImage.alt = recipe.title;
-
-            const recipeContent = document.createElement('p');
-            recipeContent.classList.add('content', 'is-size-3', 'has-text-centered');
-            // recipeContent.textContent = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, incidunt!';
-
-            const seeMoreBtn = document.createElement('button');
-            seeMoreBtn.classList.add('button', 'is-info', 'see-more-btn');
-            seeMoreBtn.setAttribute('data-target', 'modal');
-            seeMoreBtn.setAttribute('data-recipe-id', recipe.id);
-            seeMoreBtn.textContent = 'See more';
-
-            recipeCard.appendChild(recipeTitle);
-            recipeCard.appendChild(recipeImage);
-            recipeCard.appendChild(recipeContent);
-            recipeCard.appendChild(seeMoreBtn);
-
-            recipeResults.appendChild(recipeCard);
-
-            // Event listener to get recipe instructions when "See more" button is clicked
-            seeMoreBtn.addEventListener('click', () => {
-                getRecipeDetails(recipe.id);
-                modal.classList.add('is-active');
-            });
-        });
-    })
-    .catch(error => {
-        console.error('Error fetching recipes:', error);
-    });
+    displayLastSearch();
 }
+
+function displayLastSearch() {
+    const ul = $('#ul');
+
+    ul.html('');
+
+    savedRecipe.forEach((lastRecipe) => {
+        const lastSearch = $('<li>').text(lastRecipe);
+        lastSearch.click(() => {
+            searchInput.val(lastRecipe);
+            displayCards();
+        })
+        ul.append(lastSearch);
+
+    })
+
+}
+
 
 // Function to get recipe instructions and nutritional information
-function getRecipeDetails(recipeId) {
-    const instructionResults = document.querySelector('.modal-content');
 
-    // Make API call to retrieve recipe instructions using Recipe API
-    fetch(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=d93937256fa8479e9816d2f8fdf61efc`)
-    .then(response => response.json())
-    .then(data => {
-        // Display recipe instructions
-        let instructionsHtml = ``
-        if(data[0]){
-            instructionsHtml = `
-            <h2>Recipe Instructions</h2>
-            <ol>
-                ${data[0].steps.map(step => `<li>${step.step}</li>`).join('')}
-            </ol>`
-        }
-        else{
-            instructionsHtml = `<p> Sorry, No Instructions found !! </p>`
-        }
-            
-
-        // Make API call to retrieve nutritional information using Recipe API
-        return fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=d93937256fa8479e9816d2f8fdf61efc`)
-            .then(response => response.json())
-            .then(nutritionData => {
-                // Display nutritional information
-                const nutritionHtml = `
-                    <h2>Nutritional Information</h2>
-                    <p>Calories: ${nutritionData.calories}</p>
-                    <p>Protein: ${nutritionData.protein}</p>
-                    <p>Fat: ${nutritionData.fat}</p>
-                    <p>Carbohydrates: ${nutritionData.carbs}</p>
-                `;
-                // Combine recipe instructions and nutritional information
-                instructionResults.innerHTML = instructionsHtml + nutritionHtml;
-            });
+function recipeDetails(recipeId) {
+    const modalContent = $('#modal-content')
+    .html('');
+    const modalInstructions = $('#modal-instructions')
+    .addClass('is-active');
+    const modalInstructionsBg = $('#modal-instructions-bg')
+    .click(() => {
+        modalInstructions.removeClass('is-active')
     })
-    .catch(error => {
-        console.error('Error fetching recipe details:', error);
-    });
+
+    fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=${APIKey}`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((nutritionData) => {
+            // include info in the modal
+            console.log(nutritionData);
+            
+            const nutriInfo = $('<h4>')
+            .text('Nutritional Info')
+            .addClass('has-text-centered mx-3 my-3');
+
+            modalContent.append(nutriInfo);
+            const caloriesText = $('<h6>')
+            .html(`<p>Calories: ${nutritionData.calories}</p>`);
+            modalContent.append(caloriesText);
+
+            const proteinText = $('<h6>')
+            .html(`<p>Protein: ${nutritionData.protein}</p>`);
+            modalContent.append(proteinText);
+
+            const fatText = $('<h6>')
+            .html(`<p>Fat: ${nutritionData.fat}</p>`)
+            modalContent.append(fatText);
+            
+            const carboText = $('<h6>')
+            .html(`<p>Carbohydrates: ${nutritionData.carbs}</p>`)
+            modalContent.append(carboText);
+        })
+
+        fetch(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=${APIKey}`)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            // Display recipe instructions
+            console.log(data);
+            const howToDoIt = $('<h4>')
+            .text('How to do it')
+            .addClass('has-text-centered mx-3 my-3');
+            modalContent.append(howToDoIt);
+
+            const ol = $('<ol>');
+            data.forEach(recipe => {
+                if(Array.isArray(recipe.steps)) {
+                    recipe.steps.forEach(step => {
+                        const li = $('<li>').text(step.step);
+                        ol.append(li);
+                    });
+                }
+            })
+            
+            modalContent.append(ol);
+        })
 }
-
-const searchBtn = document.getElementById('search-btn');
-searchBtn.addEventListener("click", searchRecipes);
-
-modalBg.addEventListener('click', () => {
-    modal.classList.remove('is-active');
-  });
-
-
-// Populate the search input with the last 5 search terms on page load
-var saveLastSearch = (ingredients) => {
-    // Retrieve existing search terms from local storage
-    let lastSearches = JSON.parse(localStorage.getItem('lastSearches')) || [];
-
-    // Add the current search term to the array
-    lastSearches.unshift(ingredients);
-
-    // Keep only the last 5 search terms
-    lastSearches = lastSearches.slice(0, 5);
-
-    // Save the updated array in local storage
-    localStorage.setItem('lastSearches', JSON.stringify(lastSearches));
-
-    // Display the last 5 search terms in the list
-    const lastSearchList = document.querySelector('ul');
-    lastSearchList.innerHTML = ''; // Clear existing list
-
-    lastSearches.forEach((searchTerm, index) => {
-        const newElement = document.createElement('li');
-        newElement.classList.add('last-search-list');
-        newElement.textContent = searchTerm;
-
-        // Add click event listener to set search input value
-        newElement.addEventListener('click', () => {
-            document.getElementById('search-input').value = searchTerm;
-            searchRecipes();
-        });
-
-        lastSearchList.appendChild(newElement);
-    });
-};
 
  
