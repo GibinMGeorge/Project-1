@@ -1,5 +1,5 @@
 // api key
-const APIKey = '13c389678aa941079e53352da0c7ae3a';
+const APIKey = 'a2254b0ce0264d77ab48c5ae3b0bf245';
 
 // Load saved cities from local storage
 var savedRecipe = JSON.parse(localStorage.getItem('savedRecipe')) || [];
